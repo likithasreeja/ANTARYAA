@@ -2,7 +2,11 @@
  * Tests MongoDB Atlas / local URI without printing credentials.
  * Usage: node test_mongo_connection.js
  */
-require('dotenv').config({ path: require('path').join(__dirname, '.env') });
+require('dotenv').config({
+  path: require('path').join(__dirname, '.env'),
+  override: false,
+  quiet: true
+});
 
 const { connectDB, disconnectDB, getMongoUri, getDbStatus, safeMongoError } = require('./db');
 

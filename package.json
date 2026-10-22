@@ -4,6 +4,9 @@
   "description": "Antarya – Dukan Ka Dimaag (Shop's Brain)",
   "scripts": {
     "dev": "concurrently \"npm --prefix server run dev\" \"npm --prefix client run dev\"",
+    "start": "npm --prefix server start",
+    "build": "npm --prefix server install",
+    "postinstall": "npm --prefix server install",
     "server": "npm --prefix server run dev",
     "client": "npm --prefix client run dev",
     "install:all": "npm install && npm --prefix server install && npm --prefix client install"

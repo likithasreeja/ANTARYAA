@@ -1,7 +1,36 @@
 const mongoose = require('mongoose');
+const net = require('net');
 
 function getMongoUri() {
   return (process.env.MONGODB_URI || process.env.MONGO_URI || '').trim();
+}
+
+function isUsableMongoUri(uri) {
+  if (!uri) return false;
+  if (!/^mongodb(\+srv)?:\/\//i.test(uri)) return false;
+  if (/<[^>]+>/.test(uri)) return false;
+  return true;
+}
+
+function getMongoDbName(uri) {
+  const fromEnv = (process.env.MONGODB_DB || '').trim();
+  try {
+    const parsed = new URL(uri);
+    const fromUri = decodeURIComponent(parsed.pathname.replace(/^\//, '')).split('/')[0].trim();
+    if (fromUri) return fromUri;
+  } catch {
+    // Never log the URI. Fall through to the default database name.
+  }
+  return fromEnv || 'antarya';
+}
+
+function getMongoConnectOptions(uri) {
+  return {
+    family: 4,
+    serverSelectionTimeoutMS: 20000,
+    connectTimeoutMS: 20000,
+    dbName: getMongoDbName(uri)
+  };
 }
 
 function safeMongoError(err) {
@@ -44,26 +73,39 @@ const connectDB = async () => {
   console.log('---------------------------');
 
   if (isProduction && !process.env.JWT_SECRET) {
-    console.error('Fatal: JWT_SECRET is required in production.');
-    process.exit(1);
+    throw new Error('JWT_SECRET is required in production.');
   }
 
   if (mongoUri) {
-    try {
-      const conn = await mongoose.connect(mongoUri, { family: 4 });
-      console.log(`✅ MongoDB Connected: ${conn.connection.host}/${conn.connection.name}`);
-      return conn;
-    } catch (error) {
-      console.error(`❌ MongoDB Connection Error: ${safeMongoError(error)}`);
+    if (!isUsableMongoUri(mongoUri)) {
+      const message = 'MONGODB_URI is invalid. Use a mongodb+srv URI with a real username and password, and no Atlas placeholders.';
+      console.error(`Fatal: ${message}`);
       if (isProduction) {
-        process.exit(1);
+        throw new Error(message);
+      }
+    } else {
+      try {
+        if (typeof net.setDefaultAutoSelectFamily === 'function') {
+          net.setDefaultAutoSelectFamily(false);
+        }
+        const conn = await mongoose.connect(mongoUri, getMongoConnectOptions(mongoUri));
+        if (mongoose.connection.readyState !== 1) {
+          throw new Error('MongoDB reported a non-connected state after connect()');
+        }
+        console.log(`✅ MongoDB Connected: ${conn.connection.host}/${conn.connection.name}`);
+        return conn;
+      } catch (error) {
+        console.error(`❌ MongoDB Connection Error: ${safeMongoError(error)}`);
+        console.error('Check Atlas Network Access, the database user password, and that MONGODB_URI is set on the host.');
+        if (isProduction) {
+          throw error;
+        }
       }
     }
   }
 
   if (isProduction) {
-    console.error('Fatal: MONGODB_URI is required in production. In-memory MongoDB is local-only.');
-    process.exit(1);
+    throw new Error('MONGODB_URI is required in production. In-memory MongoDB is local-only.');
   }
 
   // Fallback to in-memory DB so dev/local server runs smoothly without requiring Atlas setup
@@ -376,6 +418,9 @@ module.exports = {
   connectDB,
   disconnectDB,
   getMongoUri,
+  isUsableMongoUri,
+  getMongoDbName,
+  getMongoConnectOptions,
   isDbConnected,
   getDbStatus,
   safeMongoError

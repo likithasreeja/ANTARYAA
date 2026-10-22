@@ -1,10 +1,14 @@
 // Load environment variables first
 const path = require('path');
-require('dotenv').config({ path: path.join(__dirname, '.env') });
+require('dotenv').config({
+  path: path.join(__dirname, '.env'),
+  override: false,
+  quiet: true
+});
 
 const express = require('express');
 const cors = require('cors');
-const { connectDB, disconnectDB, isDbConnected, getDbStatus } = require('./db');
+const { connectDB, disconnectDB, isDbConnected, getDbStatus, getMongoUri } = require('./db');
 
 const authRoutes = require('./routes/auth');
 const productRoutes = require('./routes/products');
@@ -80,7 +84,8 @@ function healthPayload() {
       connected: db.connected,
       state: db.state,
       host: db.host,
-      name: db.name
+      name: db.name,
+      uriConfigured: Boolean(getMongoUri())
     },
     ai: {
       gemini: Boolean(process.env.GEMINI_API_KEY),
@@ -121,6 +126,11 @@ async function shutdown(signal) {
 
 if (require.main === module) {
   connectDB().then(() => {
+    if (!isDbConnected()) {
+      console.error('Failed to start ANTARYA server: database not connected');
+      process.exit(1);
+      return;
+    }
     serverInstance = app.listen(PORT, '0.0.0.0', () => {
       console.log(`\n🏪 ANTARYA Server running on port ${PORT}`);
       console.log(`   Dukan Ka Dimaag is ready!\n`);

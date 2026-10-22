@@ -33,14 +33,19 @@ Do not paste the URI into chat. After it is in `server/.env`, run `npm run test:
 
 ## 2. Render backend
 
+The GitHub repo `likithasreeja/ANTARYAA` already *is* the app root. It contains `client/` and `server/` at the top level. Do **not** set Root Directory to `antarya1-main`, `ANTARYA`, or any Downloads ZIP path — those folders are not in GitHub.
+
+If Root Directory is empty, `npm start` used to fail with `Missing script: "start"` (the root `package.json` is a local-dev helper). If Root Directory is `server` but Build Command is `npm run build`, it used to fail with `Missing script: "build"`. Both scripts now exist, but the dashboard settings below are still required.
+
 1. Push `antarya1-main` to GitHub (this folder is the app root).
 2. Render → **New → Blueprint** and select the repo, or **New → Web Service**.
-3. If not using the Blueprint:
-   - Root Directory: `server`
+3. For the existing **ANTARYA** web service (Settings → Build & Deploy):
+   - Root Directory: `server` (exactly this, no leading slash)
    - Runtime: Node
-   - Build: `npm install`
-   - Start: `npm start`
+   - Build Command: `npm install` (not `npm run build`, and not `cd server && ...`)
+   - Start Command: `npm start` (not `cd server && npm start`)
    - Health check: `/api/health`
+   - Node: `22` (`NODE_VERSION=22` or the `server/.node-version` file)
 4. Environment variables:
 
 ```
