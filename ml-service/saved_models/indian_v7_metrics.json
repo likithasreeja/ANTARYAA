@@ -1,0 +1,24 @@
+{
+  "model_version": "7.0.0-hurdle",
+  "trained_at": "2026-07-11T09:07:59.893115",
+  "architecture": "Two-Stage Hurdle (CatBoost Binary + CatBoost Regressor)",
+  "hurdle_threshold_tau": 0.6,
+  "daily_metrics": {
+    "v6_wmape": 76.63,
+    "v7_wmape": 71.27,
+    "v6_mae": 0.9573,
+    "v7_mae": 0.8905
+  },
+  "weekly_batch_metrics": {
+    "v6_weekly_wmape": 36.22,
+    "v7_weekly_wmape": 42.87,
+    "v6_weekly_mae": 2.8054,
+    "v7_weekly_mae": 3.3208
+  },
+  "cluster_metrics": {
+    "fast_moving_wmape_v6": 62.89,
+    "fast_moving_wmape_v7": 62.79,
+    "intermittent_wmape_v6": 106.16,
+    "intermittent_wmape_v7": 89.52
+  }
+}

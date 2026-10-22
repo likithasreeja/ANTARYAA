@@ -1,0 +1,28 @@
+{
+  "name": "antarya-server",
+  "version": "1.0.0",
+  "description": "Antarya Backend API",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node index.js",
+    "start": "node index.js",
+    "test": "node --test test_mongo_redact.js",
+    "test:mongo": "node test_mongo_connection.js"
+  },
+  "engines": {
+    "node": ">=20.19.0"
+  },
+  "dependencies": {
+    "@google/genai": "^1.50.1",
+    "axios": "^1.18.1",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^17.4.2",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongodb-memory-server": "^11.0.1",
+    "mongoose": "^9.4.1",
+    "qrcode": "^1.5.4",
+    "uuid": "^9.0.1"
+  }
+}

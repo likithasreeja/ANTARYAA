@@ -1,0 +1,8 @@
+Model,WMAPE%,MAE,RMSE,BestIter,Features,TrainTime_s
+G: OLD Pipeline (v1 exact),34.55,5.68,17.15,450,18,35.9
+A: Base Only (v2),43.77,7.19,31.97,1000,37,395.8
+C: Base + Weather,43.77,7.19,31.97,1000,42,11569.6
+B: Base + Festival,43.77,7.19,31.97,1000,41,471.6
+D: Base + AGMARKNET,43.77,7.19,31.97,1000,57,677.3
+E: Base + Salary,43.77,7.19,31.97,1000,41,556.0
+F: Base + ALL Indian,43.78,7.19,31.97,1000,70,401.5

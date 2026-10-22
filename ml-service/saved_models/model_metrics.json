@@ -1,0 +1,61 @@
+{
+  "model_version": "1.0.0",
+  "trained_at": "2026-07-09T17:48:19.980510",
+  "training_rows": 3048543,
+  "test_rows": 75240,
+  "test_wmape": 34.55,
+  "test_mape": 79.82,
+  "test_mae": 5.68,
+  "test_rmse": 17.07,
+  "naive_wmape": 48.41,
+  "improvement_over_naive": 13.86,
+  "best_iteration": 315,
+  "inference_ms": 0.003,
+  "top_features": [
+    {
+      "name": "rolling_mean_7d",
+      "importance_pct": 60.0
+    },
+    {
+      "name": "lag_1",
+      "importance_pct": 12.4
+    },
+    {
+      "name": "lag_7",
+      "importance_pct": 7.7
+    },
+    {
+      "name": "lag_14",
+      "importance_pct": 5.6
+    },
+    {
+      "name": "day_of_week",
+      "importance_pct": 3.0
+    },
+    {
+      "name": "rolling_mean_30d",
+      "importance_pct": 2.7
+    },
+    {
+      "name": "lag_28",
+      "importance_pct": 2.7
+    },
+    {
+      "name": "day_of_month",
+      "importance_pct": 2.0
+    },
+    {
+      "name": "month",
+      "importance_pct": 1.4
+    },
+    {
+      "name": "family_code",
+      "importance_pct": 0.9
+    }
+  ],
+  "dataset": "Corporacion Favorita",
+  "store": 44,
+  "algorithm": "LightGBM",
+  "n_features": 18,
+  "high_volume_filter": "avg >= 2 units/day"
+}

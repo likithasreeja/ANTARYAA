@@ -1,0 +1,66 @@
+{
+  "model_version": "6.0.0",
+  "trained_at": "2026-07-10T15:28:28.879926",
+  "dataset": "Indian Retail Chain (Maharashtra, Telangana, Kerala)",
+  "training_rows": 365500,
+  "test_rows": 15500,
+  "wmape": 76.63,
+  "mae": 0.96,
+  "rmse": 3.78,
+  "mape": 50.74,
+  "best_iteration": 602,
+  "n_features": 65,
+  "train_time_s": 37.0,
+  "hyperparameters": {
+    "learning_rate": 0.019535061239262713,
+    "num_leaves": 210,
+    "feature_fraction": 0.7346973343522084,
+    "bagging_fraction": 0.6862410752684385,
+    "bagging_freq": 1,
+    "min_child_samples": 44,
+    "lambda_l1": 2.7790955789102183,
+    "lambda_l2": 7.410503168695915
+  },
+  "top_features": [
+    {
+      "Feature": "ewma_14",
+      "Importance_pct": 24.07
+    },
+    {
+      "Feature": "ewma_7",
+      "Importance_pct": 16.36
+    },
+    {
+      "Feature": "lag_1",
+      "Importance_pct": 7.46
+    },
+    {
+      "Feature": "ewma_28",
+      "Importance_pct": 6.3
+    },
+    {
+      "Feature": "rolling_mean_7d",
+      "Importance_pct": 3.32
+    },
+    {
+      "Feature": "seasonal_index",
+      "Importance_pct": 2.5
+    },
+    {
+      "Feature": "rolling_mean_30d",
+      "Importance_pct": 2.49
+    },
+    {
+      "Feature": "day_of_month",
+      "Importance_pct": 2.45
+    },
+    {
+      "Feature": "expanding_std",
+      "Importance_pct": 2.26
+    },
+    {
+      "Feature": "rolling_max_30d",
+      "Importance_pct": 1.71
+    }
+  ]
+}

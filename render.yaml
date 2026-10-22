@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: antarya-api
+    runtime: node
+    plan: free
+    rootDir: server
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NODE_VERSION
+        value: "22"
+      - key: JWT_SECRET
+        generateValue: true
+      - key: MONGODB_URI
+        sync: false
+      - key: FRONTEND_ORIGIN
+        value: https://antarya-one.vercel.app
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: FASTAPI_URL
+        sync: false

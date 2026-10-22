@@ -1,0 +1,110 @@
+[
+  {
+    "id": "9345e785-35af-4e7b-8ba3-29cfcd8cb2ea",
+    "saleId": "8e9d114f-bc32-46aa-b008-49e7888fd553",
+    "shopId": "34190206-1f8f-4bbe-8fb4-eaed8f75e1ce",
+    "productId": "b998c7f6-0393-4771-93f1-365c2133682d",
+    "productName": "Rice (Chawal)",
+    "quantity": 1,
+    "unit": "kg",
+    "price": 60,
+    "itemTotal": 60,
+    "createdAt": "2026-04-17T18:13:06.571Z"
+  },
+  {
+    "id": "4a41d63e-6b7b-492d-982f-eafce3298954",
+    "saleId": "82736535-41ab-4637-9bce-5c09138066e3",
+    "shopId": "699f71da-d1fd-4d67-b186-21a279193080",
+    "productId": "6d44fe59-f160-4298-905d-17a50486c112",
+    "productName": "Wheat Flour (Atta)",
+    "quantity": 1,
+    "unit": "kg",
+    "price": 45,
+    "itemTotal": 45,
+    "createdAt": "2026-04-17T22:28:40.189Z"
+  },
+  {
+    "id": "9fb36bdb-8f93-4393-8e85-c2950ae3e114",
+    "saleId": "a38e26f4-7ddb-4717-adf4-fdc2debd059b",
+    "shopId": "699f71da-d1fd-4d67-b186-21a279193080",
+    "productId": "91a955ad-22aa-4172-823f-03bb70acf05d",
+    "productName": "Cooking Oil (Tel)",
+    "quantity": 1,
+    "unit": "L",
+    "price": 95,
+    "itemTotal": 95,
+    "createdAt": "2026-04-17T22:28:50.865Z"
+  },
+  {
+    "id": "0f544509-5632-40c8-930a-debc1534dc25",
+    "saleId": "5bb73dc3-8b4e-4d8d-bad3-e489ef222fe9",
+    "shopId": "699f71da-d1fd-4d67-b186-21a279193080",
+    "productId": "6d44fe59-f160-4298-905d-17a50486c112",
+    "productName": "Wheat Flour (Atta)",
+    "quantity": 1,
+    "unit": "kg",
+    "price": 45,
+    "itemTotal": 45,
+    "createdAt": "2026-04-17T22:29:05.461Z"
+  },
+  {
+    "id": "5827854b-bc7e-4df4-9de4-a695ed863721",
+    "saleId": "5bb73dc3-8b4e-4d8d-bad3-e489ef222fe9",
+    "shopId": "699f71da-d1fd-4d67-b186-21a279193080",
+    "productId": "1e582978-9e5e-4715-9a19-641686a92ccc",
+    "productName": "Rice (Chawal)",
+    "quantity": 1,
+    "unit": "kg",
+    "price": 60,
+    "itemTotal": 60,
+    "createdAt": "2026-04-17T22:29:05.475Z"
+  },
+  {
+    "id": "8b0b844e-ce57-4b5a-beed-3ce19e36d20d",
+    "saleId": "d2c97e1e-41a3-4207-9cd9-ad01e8e13b58",
+    "shopId": "699f71da-d1fd-4d67-b186-21a279193080",
+    "productId": "1e582978-9e5e-4715-9a19-641686a92ccc",
+    "productName": "Rice (Chawal)",
+    "quantity": 1,
+    "unit": "kg",
+    "price": 60,
+    "itemTotal": 60,
+    "createdAt": "2026-04-17T22:34:44.047Z"
+  },
+  {
+    "id": "d18e9d10-7eda-47d0-a4d7-f441ce6a9224",
+    "saleId": "fbfcbb7e-dcce-4d6f-b5d8-221cd15ca1ba",
+    "shopId": "cca8fbc3-99cb-468e-a6c1-5f7080e09dc2",
+    "productId": "bbc4ee22-d459-4dbc-8a36-585814e02b1e",
+    "productName": "Cooking Oil (Tel)",
+    "quantity": 1,
+    "unit": "L",
+    "price": 95,
+    "itemTotal": 95,
+    "createdAt": "2026-04-17T22:47:05.021Z"
+  },
+  {
+    "id": "74be8d4b-4943-46c2-8a9d-fe72ae2d9a54",
+    "saleId": "2a695a35-2e29-4729-8486-96d3fb9b7b2b",
+    "shopId": "cca8fbc3-99cb-468e-a6c1-5f7080e09dc2",
+    "productId": "4da7bc1d-e948-4131-af48-92219b152035",
+    "productName": "Bread",
+    "quantity": 13,
+    "unit": "pc",
+    "price": 40,
+    "itemTotal": 520,
+    "createdAt": "2026-04-17T23:10:00.204Z"
+  },
+  {
+    "id": "1b704240-1929-497e-923d-d57044489d76",
+    "saleId": "8503aa7a-0844-4921-be90-424885621ca1",
+    "shopId": "2044f2e6-bd6e-4384-80d3-b1a383060c15",
+    "productId": "5b11eb71-2ead-423e-a1b4-73c7da77ef44",
+    "productName": "Masoor Dal 50 KG",
+    "quantity": 1,
+    "unit": "pc",
+    "price": 4825,
+    "itemTotal": 4825,
+    "createdAt": "2026-04-17T23:31:47.145Z"
+  }
+]

@@ -1,0 +1,29 @@
+[
+  {
+    "id": "9e35bf42-5284-41ec-b511-e32d71fb4284",
+    "shopId": "cca8fbc3-99cb-468e-a6c1-5f7080e09dc2",
+    "description": "rent",
+    "amount": 1200,
+    "category": "Rent",
+    "createdAt": "2026-04-17T22:47:44.004Z"
+  },
+  {
+    "id": "29036163-56aa-4270-8d51-eef81a2c64f8",
+    "shopId": "cca8fbc3-99cb-468e-a6c1-5f7080e09dc2",
+    "description": "Stock: Bread x 15 pc",
+    "amount": 480,
+    "category": "Stock Purchase",
+    "productId": "4da7bc1d-e948-4131-af48-92219b152035",
+    "createdAt": "2026-04-17T23:10:55.267Z"
+  },
+  {
+    "id": "446370cd-cdaf-451e-94b3-5a9e40f1175f",
+    "shopId": "2044f2e6-bd6e-4384-80d3-b1a383060c15",
+    "description": "SHOP RENT",
+    "amount": 1200,
+    "category": "Rent",
+    "month": "2026-04",
+    "date": "2026-04-17",
+    "createdAt": "2026-04-17T23:32:26.538Z"
+  }
+]

@@ -1,0 +1,4 @@
+Algorithm,WMAPE,MAPE,MAE,Time_s
+LightGBM,34.55,79.82,5.68,37.93
+Linear Regression,38.37,89.06,6.31,2.21
+Naive Forecast,48.41,85.65,7.96,0.0

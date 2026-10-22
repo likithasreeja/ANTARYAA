@@ -1,0 +1,50 @@
+[
+  {
+    "id": "cca8fbc3-99cb-468e-a6c1-5f7080e09dc2",
+    "name": "Patel Kirana Store",
+    "ownerName": "Raju Bhai",
+    "city": "Mumbai",
+    "phone": "9876543210",
+    "password": "$2a$10$hEiwLgFip9fp.B9MQB8BNu8.pQUtuLGRVF4H3iUdBI1F2JASwh7Pm",
+    "cashInHand": -1065,
+    "setupComplete": true,
+    "createdAt": "2026-04-17T17:49:17.816Z",
+    "updatedAt": "2026-04-17T23:10:55.270Z"
+  },
+  {
+    "id": "34190206-1f8f-4bbe-8fb4-eaed8f75e1ce",
+    "name": "patel",
+    "ownerName": "ARJUN DASARI",
+    "city": "Mahabubnagar",
+    "phone": "08328378596",
+    "password": "$2a$10$3Kmll4c90evqKjrOl5XNoe3fBQFUk1979f8i3YLHcpWNDBorZOGmi",
+    "cashInHand": 60,
+    "setupComplete": true,
+    "createdAt": "2026-04-17T18:11:24.421Z",
+    "updatedAt": "2026-04-17T18:13:06.578Z"
+  },
+  {
+    "id": "699f71da-d1fd-4d67-b186-21a279193080",
+    "name": "arjunshop",
+    "ownerName": "arjun",
+    "city": "mumbai",
+    "phone": "09542624360",
+    "password": "$2a$10$a2phTaSearxoK.ZEzLxiD.p4Rt1XOSqBE/rgrlFDJmJmKCdNhx89u",
+    "cashInHand": 200,
+    "setupComplete": true,
+    "createdAt": "2026-04-17T22:27:15.915Z",
+    "updatedAt": "2026-04-17T22:29:05.501Z"
+  },
+  {
+    "id": "2044f2e6-bd6e-4384-80d3-b1a383060c15",
+    "name": "ARJUN",
+    "ownerName": "ARJUN DASARI",
+    "city": "MUMBAI",
+    "phone": "9542624360",
+    "password": "$2a$10$mZv1wUJfD/6TOanmqdNOKO7Y3Nhh/.YgkE5gfep9uckuhNKdXCT8e",
+    "cashInHand": 3625,
+    "setupComplete": true,
+    "createdAt": "2026-04-17T23:26:38.364Z",
+    "updatedAt": "2026-04-17T23:32:26.540Z"
+  }
+]

@@ -1,0 +1,48 @@
+# Ignore Node.js Dependencies
+node_modules/
+client/node_modules/
+server/node_modules/
+
+# Ignore Environment Variables (CRITICAL: Do not upload API keys!)
+.env
+.env.local
+.env.*.local
+.env.production
+server/.env
+server/.env.local
+client/.env
+client/.env.local
+client/.env.*.local
+*.pem
+*.p12
+*.key
+credentials.json
+secrets.json
+
+# Ignore build output and temp files
+client/dist/
+client/.vercel/
+.vercel/
+build/
+.DS_Store
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Ignore ML and Python temp directories
+catboost_info/
+__pycache__/
+*.pyc
+*.pkl
+
+# Local MongoDB memory-server binaries
+server/.cache/
+
+# Ignore raw massive datasets >100MB for GitHub
+*.zip
+*.7z
+ml-service/data/train.csv
+
+# Local scratch
+test_scratch.js

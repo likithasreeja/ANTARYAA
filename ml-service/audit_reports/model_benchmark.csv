@@ -1,0 +1,6 @@
+Algorithm,WMAPE_mean,WMAPE_std,MAE_mean,RMSE_mean,TrainTime_s,n_folds
+CatBoost,70.27,1.51,0.86,2.82,120.7,5
+LightGBM,78.88,2.77,0.96,2.66,28.8,5
+RandomForest,79.17,2.81,0.96,2.65,1925.0,5
+XGBoost,79.26,2.11,0.97,2.67,34.8,5
+HistGBT,80.22,2.88,0.98,2.67,25.5,5
