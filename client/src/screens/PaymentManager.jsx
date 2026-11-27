@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   QrCode, ArrowLeft, Download, Maximize2, CheckCircle2, Clock, 
@@ -7,6 +7,7 @@ import {
   CreditCard, ChevronRight, Eye, UserPlus, Calendar, X, Zap
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { QRCodeCanvas } from 'qrcode.react';
 import api from '../api';
 import { trackEvent } from '../utils/analytics';
 import PaymentQRModal from '../components/PaymentQRModal';
@@ -57,12 +58,18 @@ export default function PaymentManager() {
   // Selected Payment for Detail View
   const [selectedPaymentDetail, setSelectedPaymentDetail] = useState(null);
 
-  // Permanent Store QR Code Image
-  const [imageError, setImageError] = useState(false);
-  const QR_IMAGE_PATH = '/images/payment-qr.jpeg';
+  // Counter QR: rebuilt every time the amount changes
+  const [merchant, setMerchant] = useState(null);
+  const qrCanvasRef = useRef(null);
+  // Whole rupees, matching how the server creates payment requests
+  const qrAmount = Math.max(0, Math.round(Number(customAmount) || 0));
+  const upiLink = merchant?.merchantVpa && qrAmount > 0
+    ? `upi://pay?pa=${merchant.merchantVpa}&pn=${encodeURIComponent(merchant.merchantName)}&am=${qrAmount}&cu=INR`
+    : '';
 
   useEffect(() => {
     loadPaymentData();
+    api.getProviderStatus().then(setMerchant).catch(console.error);
   }, []);
 
   const loadPaymentData = async () => {
@@ -91,27 +98,14 @@ export default function PaymentManager() {
     setQrModalOpen(true);
   };
 
-  const handleDownloadQR = async () => {
-    try {
-      const response = await fetch(QR_IMAGE_PATH);
-      if (!response.ok) throw new Error('Failed to fetch image');
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = 'store_upi_payment_qr.jpeg';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(url);
-    } catch {
-      const link = document.createElement('a');
-      link.href = QR_IMAGE_PATH;
-      link.download = 'store_upi_payment_qr.jpeg';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    }
+  const handleDownloadQR = () => {
+    if (!qrCanvasRef.current) return;
+    const link = document.createElement('a');
+    link.href = qrCanvasRef.current.toDataURL('image/png');
+    link.download = `upi_qr_rs${qrAmount}.png`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   const receiptDataFor = (payment) => ({
@@ -397,7 +391,7 @@ export default function PaymentManager() {
               </h3>
             </div>
             <p style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', margin: '0 0 16px', maxWidth: 320 }}>
-              Permanent shop counter QR. For dynamic customer bills with instant status notifications, use the request creator on the right.
+              This QR changes with the amount on the right. To record and track the payment, use "Open Dynamic QR".
             </p>
 
             <div style={{
@@ -414,37 +408,32 @@ export default function PaymentManager() {
               minHeight: 280,
               marginBottom: 16
             }}>
-              {!imageError ? (
-                <img
-                  src={QR_IMAGE_PATH}
-                  alt="Store UPI QR Code"
-                  onError={() => setImageError(true)}
-                  onLoad={() => setImageError(false)}
-                  style={{
-                    width: '100%',
-                    height: 'auto',
-                    maxWidth: 240,
-                    maxHeight: 240,
-                    objectFit: 'contain',
-                    aspectRatio: '1 / 1',
-                    borderRadius: '12px'
-                  }}
-                />
+              {upiLink ? (
+                <>
+                  <div style={{ fontSize: '1.4rem', fontWeight: 900, color: '#0f172a', marginBottom: 8 }}>
+                    ₹{qrAmount.toLocaleString('en-IN')}
+                  </div>
+                  <QRCodeCanvas
+                    ref={qrCanvasRef}
+                    value={upiLink}
+                    size={480}
+                    level="M"
+                    includeMargin
+                    style={{ width: '100%', height: 'auto', maxWidth: 240 }}
+                  />
+                </>
               ) : (
-                <div style={{ textAlign: 'center', padding: '20px 12px', color: '#1e293b' }}>
-                  <AlertCircle size={40} color="#ef4444" style={{ margin: '0 auto 8px' }} />
-                  <div style={{ fontWeight: 800, fontSize: '0.92rem', color: '#991b1b', marginBottom: 6 }}>
-                    Store Standee Ready
-                  </div>
-                  <div style={{ fontSize: '0.74rem', color: '#64748b', marginBottom: 12, lineHeight: 1.4 }}>
-                    Ready for dynamic QR generation. Click below to test with custom amount.
-                  </div>
+                <div style={{ fontSize: '0.82rem', fontWeight: 700, color: '#475569', padding: '20px 12px' }}>
+                  {merchant ? 'Enter an amount to generate the QR.' : 'Loading UPI details...'}
                 </div>
               )}
 
-              <div style={{ marginTop: 12, fontSize: '0.7rem', fontWeight: 700, color: '#475569' }}>
-                UPI ID: merchant@upi • All UPI Apps Supported
-              </div>
+              {merchant && (
+                <div style={{ marginTop: 12, fontSize: '0.7rem', fontWeight: 700, color: '#475569' }}>
+                  {merchant.merchantName}<br />
+                  UPI ID: {merchant.merchantVpa}
+                </div>
+              )}
             </div>
 
             <div style={{ display: 'flex', gap: 10, width: '100%', maxWidth: 280 }}>

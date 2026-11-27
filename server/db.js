@@ -112,10 +112,10 @@ const connectDB = async () => {
   console.log('\n⚠️  STARTING LOCAL IN-MEMORY MONGODB FOR DEVELOPMENT...');
   try {
     const { MongoMemoryServer } = require('mongodb-memory-server');
-    const mongoServer = await MongoMemoryServer.create({
-      instance: { storageEngine: 'wiredTiger' },
-      binary: { downloadDir: require('path').join(__dirname, '.cache', 'mongodb-binaries') }
-    });
+        const mongoServer = await MongoMemoryServer.create({
+          instance: { storageEngine: 'wiredTiger', launchTimeout: 120000 },
+          binary: { downloadDir: require('path').join(__dirname, '.cache', 'mongodb-binaries') }
+        });
     const conn = await mongoose.connect(mongoServer.getUri());
     console.log(`✅ In-Memory MongoDB Connected successfully (${conn.connection.host})`);
     return conn;
@@ -178,11 +178,14 @@ const customerSchema = new mongoose.Schema({
     default: 'Active' 
   },
   amountPaid: { type: Number, default: 0 },
-  paymentStatus: { 
-    type: String, 
-    enum: ['Paid', 'Pending', 'Partially Paid', 'Up-to-date', 'Overdue'], 
-    default: 'Up-to-date' 
+  paymentStatus: {
+    type: String,
+    enum: ['Paid', 'Pending', 'Partially Paid', 'Up-to-date', 'Overdue'],
+    default: 'Up-to-date'
   },
+  // History from an uploaded customer file, kept apart from bills made in the app
+  importedSpent: { type: Number, default: 0 },
+  importedPaid: { type: Number, default: 0 },
   lastVisit: { type: Date },
   isDemo: { type: Boolean, default: false }
 }, { timestamps: true });

@@ -1,0 +1,37 @@
+Item Name,Selling Price,Cost Price,Stock,Unit,Category,Min Stock
+Toor Dal 1kg,160,138,25,pc,Grains & Pulses,8
+Moong Dal 1kg,140,120,18,pc,Grains & Pulses,6
+Chana Dal 1kg,105,88,20,pc,Grains & Pulses,6
+Sona Masoori Rice 5kg,380,330,15,pc,Grains & Pulses,5
+Basmati Rice 1kg,145,118,22,pc,Grains & Pulses,6
+Wheat Atta 5kg,265,232,20,pc,Grains & Pulses,8
+Sugar 1kg,48,42,40,pc,Essentials,10
+Salt 1kg,28,22,35,pc,Essentials,10
+Sunflower Oil 1L,150,132,30,pc,Cooking Oil,10
+Groundnut Oil 1L,195,172,14,pc,Cooking Oil,5
+Mustard Oil 1L,175,154,10,pc,Cooking Oil,4
+Ghee 500ml,340,295,12,pc,Dairy,4
+Milk 500ml,30,27,60,pc,Dairy,20
+Curd 400g,40,34,30,pc,Dairy,10
+Butter 100g,62,54,25,pc,Dairy,8
+Paneer 200g,95,80,12,pc,Dairy,5
+Turmeric Powder 200g,65,50,24,pc,Spices,6
+Red Chilli Powder 200g,90,72,22,pc,Spices,6
+Coriander Powder 200g,60,46,20,pc,Spices,6
+Cumin Seeds 100g,70,55,18,pc,Spices,5
+Tea Powder 250g,150,126,16,pc,Beverages,5
+Coffee 100g,190,160,10,pc,Beverages,4
+Soft Drink 750ml,45,37,36,pc,Beverages,12
+Fruit Juice 1L,120,98,14,pc,Beverages,5
+Glucose Biscuits,10,8,120,pc,Snacks,30
+Cream Biscuits,30,24,60,pc,Snacks,15
+Potato Chips,20,16,75,pc,Snacks,20
+Namkeen Mixture 200g,60,47,28,pc,Snacks,8
+Instant Noodles,15,12,90,pc,Snacks,25
+Bath Soap,45,36,50,pc,Personal Care,12
+Shampoo 180ml,160,130,12,pc,Personal Care,4
+Toothpaste 150g,105,86,20,pc,Personal Care,6
+Detergent Powder 1kg,125,103,18,pc,Household,6
+Dishwash Bar,10,8,80,pc,Household,20
+Floor Cleaner 500ml,110,88,3,pc,Household,5
+Matchbox Pack,15,11,2,pc,Household,10

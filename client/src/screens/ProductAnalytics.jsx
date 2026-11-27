@@ -154,6 +154,16 @@ export default function ProductAnalytics() {
         </motion.div>
       )}
 
+      {summary.uploadedSheet?.revenue > 0 ? (
+        <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: 12 }}>
+          Revenue, units, price, profit, turnover and product charts include the uploaded sales sheet for "{summary.uploadedSheet.market}" ({fmt(summary.uploadedSheet.revenue)}). Orders and order value come from app bills and customer files.
+        </div>
+      ) : summary.uploadedHistory?.orders > 0 && (
+        <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: 12 }}>
+          Revenue, orders and order value include {fmt(summary.uploadedHistory.revenue)} from {summary.uploadedHistory.orders} orders in uploaded customer files. Upload a sales sheet in Excel Inventory to fill the product figures.
+        </div>
+      )}
+
       {/* ─── 10 KPI CARDS GRID ─── */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 12, marginBottom: 24 }}>
         
@@ -185,7 +195,7 @@ export default function ProductAnalytics() {
             <ShoppingBag size={15} color="#c084fc" /> Total Orders
           </div>
           <div style={{ fontFamily: 'var(--font-display)', fontSize: '1.6rem', fontWeight: 900, color: 'white', margin: '4px 0 2px' }}>
-            {summary.totalOrders} <span style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>bills</span>
+            {summary.totalOrders} <span style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>{summary.uploadedHistory?.orders ? 'orders' : 'bills'}</span>
           </div>
           <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>Completed checkouts</div>
         </div>

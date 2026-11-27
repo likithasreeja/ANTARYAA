@@ -360,19 +360,33 @@ router.post('/', async (req, res) => {
     const { name, phone, city, customerType, status, totalCredit } = req.body;
     if (!name || !name.trim()) return res.status(400).json({ error: 'Customer name is required' });
 
+    // Optional purchase history, sent when customers are uploaded from a file
+    const hasPaid = req.body.amountPaid !== undefined;
+    const amountPaid = Math.max(0, Number(req.body.amountPaid) || 0);
+    const credit = Number(totalCredit) || 0;
+    const totalSpent = hasPaid ? amountPaid + Math.max(0, credit) : 0;
+    const purchaseDate = new Date(req.body.lastVisit || Date.now());
+    if (Number.isNaN(purchaseDate.getTime())) return res.status(400).json({ error: 'Invalid purchase date' });
+
     const customer = new db.customers({
       id: `CUST-${uuidv4().substring(0, 8)}`,
       shopId: req.shopId,
       name: name.trim(),
       phone: phone ? phone.trim() : '',
       city: city ? city.trim() : 'Local Area',
-      totalSpent: 0,
-      totalCredit: Number(totalCredit) || 0,
-      totalTransactions: 0,
-      averageOrderValue: 0,
+      totalSpent,
+      totalCredit: credit,
+      totalTransactions: totalSpent > 0 ? 1 : 0,
+      averageOrderValue: totalSpent,
+      ...(hasPaid && {
+        amountPaid,
+        importedSpent: totalSpent,
+        importedPaid: amountPaid,
+        paymentStatus: credit <= 0 ? 'Paid' : amountPaid > 0 ? 'Partially Paid' : 'Pending'
+      }),
       customerType: customerType || 'New',
       status: status || 'Active',
-      lastVisit: new Date(),
+      lastVisit: purchaseDate,
       isDemo: false
     });
 

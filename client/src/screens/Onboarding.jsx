@@ -5,6 +5,7 @@ import { Check, FileSpreadsheet, BrainCircuit, BookOpen, ScanLine, Sparkles, Tre
 import api from '../api';
 import { trackEvent } from '../utils/analytics';
 import { parseStockSheet, stockSheetTemplateCsv, STOCK_SHEET_ACCEPT } from '../utils/stockSheet';
+import { registrationError, PASSWORD_MIN } from '../utils/registrationRules';
 
 const defaultProducts = [
   { name: 'Rice', nameHindi: 'चावल', emoji: '🍚', sellingPrice: 60, costPrice: 45, unit: 'kg', category: 'Grains', minStock: 10 },
@@ -58,6 +59,11 @@ export default function Onboarding() {
     e.preventDefault();
     if (!shopName || !ownerName || !phone || !password) {
       showToast('Please fill all fields', 'error');
+      return;
+    }
+    const ruleError = registrationError({ name: shopName, ownerName, password });
+    if (ruleError) {
+      showToast(ruleError, 'error');
       return;
     }
     setLoading(true);
@@ -342,6 +348,11 @@ export default function Onboarding() {
                 <div className="setup-input-group" style={{ marginBottom: 32 }}>
                   <label>Password</label>
                   <input className="setup-input" type="password" placeholder="••••••••" value={password} onChange={e => setPassword(e.target.value)} required />
+                  {!isLogin && (
+                    <small style={{ display: 'block', marginTop: 6, color: 'var(--text-secondary)' }}>
+                      At least {PASSWORD_MIN} characters, with at least 1 capital letter, 1 number and 1 special character.
+                    </small>
+                  )}
                 </div>
 
                 <button className="btn-setup" type="submit" disabled={loading}>

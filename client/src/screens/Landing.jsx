@@ -177,6 +177,29 @@ export default function Landing() {
         </div>
       </section>
 
+      {/* ===== CUSTOMER SECTION ===== */}
+      <section className="landing-features-section">
+        <div className="landing-features-container">
+          <div className="landing-features-header">
+            <h2>
+              Our <span className="text-emerald-400">Customer</span>
+            </h2>
+          </div>
+
+          <figure className="landing-feature-card" style={{ maxWidth: '42rem', margin: '0 auto', textAlign: 'center' }}>
+            <blockquote style={{ margin: 0 }}>
+              <p style={{ fontSize: '1.25rem' }}>
+                “We like this Antarya so much, it is very useful for our day to day life.”
+              </p>
+            </blockquote>
+            <figcaption style={{ marginTop: '1.5rem' }}>
+              <h3>Ratnadeep</h3>
+              <p>Purchased ANTARYA, using it for billing, stock and payments since September 2026</p>
+            </figcaption>
+          </figure>
+        </div>
+      </section>
+
       {/* ===== FINAL CTA ===== */}
       <section className="landing-final-cta">
         <h2>

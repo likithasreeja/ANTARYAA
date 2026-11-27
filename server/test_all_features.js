@@ -35,7 +35,7 @@ async function runTests() {
 
   // TEST 2: Register / Login Shop
   const testPhone = '9876543299';
-  const testPassword = 'password123';
+  const testPassword = 'Pass@123';
   try {
     try {
       const regRes = await axios.post(`${BASE_URL}/auth/register`, {

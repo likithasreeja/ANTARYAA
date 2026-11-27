@@ -4,8 +4,9 @@ import {
   Search, UserPlus, Phone, CreditCard, ArrowLeft, X, Download, 
   Users, TrendingUp, Sparkles, ShoppingBag, ShieldCheck, HelpCircle,
   Clock, AlertCircle, ChevronRight, ChevronLeft, CheckCircle2, DollarSign, BarChart3,
-  PieChart as PieIcon, PhoneCall, RefreshCw, Eye, QrCode, Edit3, Trash2
+  PieChart as PieIcon, PhoneCall, RefreshCw, Eye, QrCode, Edit3, Trash2, Upload
 } from 'lucide-react';
+import { parseCustomerSheet, CUSTOMER_SHEET_ACCEPT } from '../utils/customerSheet';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import api from '../api';
@@ -28,6 +29,8 @@ export default function MyCustomers() {
   const [activeTab, setActiveTab] = useState('list'); // 'list' | 'analytics' | 'segmentation'
   const [qrModalCustomer, setQrModalCustomer] = useState(null);
   const customerListViewTracked = useRef(false);
+  const importInputRef = useRef(null);
+  const [importProgress, setImportProgress] = useState('');
 
   const [searchTerm, setSearchTerm] = useState('');
   const [filterSegment, setFilterSegment] = useState('all');
@@ -102,6 +105,38 @@ export default function MyCustomers() {
       showToast(err.message || 'Failed to load customer records', 'error');
     }
     setLoadingSeed(false);
+  };
+
+  const handleImportFile = async (file) => {
+    if (!file) return;
+    setImportProgress('Reading file...');
+    let added = 0;
+    try {
+      // Fetch the latest list so already saved customers are not added twice
+      const existing = await api.getCustomers();
+      const { customers: rows, duplicates, invalid } = await parseCustomerSheet(file, existing);
+      const skipped = [
+        duplicates && `${duplicates} already saved or repeated`,
+        invalid && `${invalid} with a missing name, invalid amount or invalid date`
+      ].filter(Boolean).join(', ');
+
+      if (!rows.length) {
+        showToast(`No new customers to add${skipped ? ` (skipped: ${skipped})` : ''}`, 'error');
+      } else if (window.confirm(`Add ${rows.length} customers from ${file.name}?${skipped ? `\nSkipped: ${skipped}.` : ''}`)) {
+        for (const row of rows) {
+          setImportProgress(`Adding ${added + 1} of ${rows.length}...`);
+          await api.addCustomer(row);
+          added += 1;
+        }
+        showToast(`${added} customers added`);
+        await loadAllCustomerData();
+      }
+    } catch (err) {
+      console.error(err);
+      showToast(added ? `Stopped after ${added} customers: ${err.message}. Upload the file again to add the rest.` : err.message, 'error');
+      if (added) await loadAllCustomerData();
+    }
+    setImportProgress('');
   };
 
   const handleOpenDetails = async (customerId) => {
@@ -360,7 +395,15 @@ export default function MyCustomers() {
             {loadingSeed ? 'Syncing...' : 'Reload Sample Customers'}
           </button>
 
-          <button className="btn btn-secondary" onClick={handleExportCSV} style={{ padding: '9px 14px', borderRadius: '12px', display: 'flex', alignItems: 'center', gap: 6 }}>
+          <button className="btn btn-secondary" onClick={() => importInputRef.current?.click()} disabled={!!importProgress}
+            title="CSV or Excel with columns: Name, Phone, City, Amount Paid, Outstanding Balance, Date of Purchase"
+            style={{ padding: '9px 14px', borderRadius: '12px', display: 'flex', alignItems: 'center', gap: 6 }}>
+            <Upload size={16} /> {importProgress || 'Upload Customers'}
+          </button>
+          <input ref={importInputRef} type="file" accept={CUSTOMER_SHEET_ACCEPT} style={{ display: 'none' }}
+            onChange={e => { handleImportFile(e.target.files[0]); e.target.value = ''; }} />
+
+          <button className="btn btn-secondary" onClick={handleExportCSV}style={{ padding: '9px 14px', borderRadius: '12px', display: 'flex', alignItems: 'center', gap: 6 }}>
             <Download size={16} /> Export CSV
           </button>
 

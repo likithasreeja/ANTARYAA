@@ -42,7 +42,7 @@ async function runTests() {
     // STEP 1: Register or Login Test Merchant Shop
     console.log('--- STEP 1: Authenticate Merchant Shop ---');
     const testPhone = '9988776655';
-    const testPassword = 'securePassword123';
+    const testPassword = 'Pass@123';
     let token = null;
 
     try {

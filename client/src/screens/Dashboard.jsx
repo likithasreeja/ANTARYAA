@@ -245,7 +245,7 @@ export default function Dashboard() {
                 <ShoppingBag size={15} color="#c084fc" /> Total Orders
               </div>
               <div style={{ fontFamily: 'var(--font-display)', fontSize: '1.6rem', fontWeight: 900, color: 'white', margin: '4px 0 0' }}>
-                {data.totalOrders || 0} <span style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>bills</span>
+                {data.totalOrders || 0} <span style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>{data.uploadedHistory?.orders ? 'orders' : 'bills'}</span>
               </div>
               <div style={{ fontSize: '0.7rem', color: '#fb7185', fontWeight: 600, marginTop: 2 }}>
                 Balance: {fmt(data.totalCreditOutstanding)}
@@ -279,6 +279,15 @@ export default function Dashboard() {
             </div>
 
           </div>
+          {data.uploadedSheet?.revenue > 0 ? (
+            <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: 10 }}>
+              Sales Revenue includes {fmt(data.uploadedSheet.revenue)} from the uploaded sales sheet for "{data.uploadedSheet.market}". Total Orders and Avg Order Value come from app bills and customer files.
+            </div>
+          ) : data.uploadedHistory?.orders > 0 && (
+            <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: 10 }}>
+              Sales Revenue and Total Orders include {fmt(data.uploadedHistory.revenue)} from {data.uploadedHistory.orders} orders in uploaded customer files.
+            </div>
+          )}
         </motion.div>
       </div>
 

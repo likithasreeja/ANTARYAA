@@ -2,6 +2,7 @@ const express = require('express');
 const { v4: uuidv4 } = require('uuid');
 const { db } = require('../db');
 const { authMiddleware } = require('../middleware');
+const { getSheetSales, rowRevenue } = require('../services/sheetSales');
 const { generateDemoDataset } = require('../data/demoData');
 
 const { exec } = require('child_process');
@@ -270,7 +271,6 @@ router.get('/', async (req, res) => {
     // Overall metrics
     const totalLifetimeRevenue = mappedSales.reduce((sum, s) => sum + s.total, 0);
     const totalLifetimeOrders = mappedSales.length;
-    const overallAOV = totalLifetimeOrders > 0 ? Math.round(totalLifetimeRevenue / totalLifetimeOrders) : 0;
     const totalInventoryValue = products.reduce((sum, p) => sum + ((p.quantity || 0) * (p.sellingPrice || 0)), 0);
 
     // Today's sales
@@ -353,19 +353,32 @@ router.get('/', async (req, res) => {
       return sum;
     }, 0);
 
+    // Uploaded customer history counts toward the overview cards (one order per customer)
+    const imported = customers.filter(c => (c.importedSpent || 0) > 0);
+    const importedRevenue = imported.reduce((sum, c) => sum + c.importedSpent, 0);
+    const importedCollected = customers.reduce((sum, c) => sum + (c.importedPaid || 0), 0);
+    const orderRevenue = totalLifetimeRevenue + importedRevenue;
+    const overviewOrders = totalLifetimeOrders + imported.length;
+    // A sales sheet and a customer file can describe the same sales, so only one adds to revenue
+    const sheet = await getSheetSales(req.shopId);
+    const sheetRevenue = Math.round(sheet.rows.reduce((sum, r) => sum + rowRevenue(r), 0));
+    const overviewRevenue = sheetRevenue > 0 ? totalLifetimeRevenue + sheetRevenue : orderRevenue;
+
     res.json({
       greeting,
       shopName: shop.name,
       ownerName: shop.ownerName,
       hasDemoData: customers.some(c => c.isDemo) || sales.some(s => s.isDemo),
-      
+
       // Business Overview KPIs
-      totalRevenue: totalLifetimeRevenue,
-      totalOrders: totalLifetimeOrders,
-      averageOrderValue: overallAOV,
+      totalRevenue: overviewRevenue,
+      totalOrders: overviewOrders,
+      averageOrderValue: overviewOrders > 0 ? Math.round(orderRevenue / overviewOrders) : 0,
+      uploadedHistory: { orders: imported.length, revenue: importedRevenue },
+      uploadedSheet: { revenue: sheetRevenue, market: sheet.market },
       inventoryValue: totalInventoryValue,
       cashInHand: Math.max(0, monthTotal - monthExpenseTotal),
-      totalMoneyCollected,
+      totalMoneyCollected: totalMoneyCollected + importedCollected,
       totalPendingPayments,
       totalCreditOutstanding: totalCredit,
 
@@ -517,6 +530,51 @@ router.get('/product-analytics', async (req, res) => {
       }
     });
 
+    // Add the product-wise rows of the uploaded sales sheet for this period
+    const billRevenue = totalRevenue;
+    const sheet = await getSheetSales(req.shopId, {
+      from: startDate.toISOString().slice(0, 10),
+      before: endDate.toISOString().slice(0, 10)
+    });
+    const sheetStats = {};
+    let sheetRevenue = 0;
+    sheet.rows.forEach(r => {
+      const revenue = rowRevenue(r);
+      const cost = r.quantity * (r.cost ?? (r.price || 0) * 0.8);
+      sheetRevenue += revenue;
+      totalUnitsSold += r.quantity;
+      totalCost += cost;
+
+      timelineMap[r.date] ||= { date: r.date, revenue: 0, units: 0, orders: 0 };
+      timelineMap[r.date].revenue += revenue;
+      timelineMap[r.date].units += r.quantity;
+
+      const name = r.product.trim().toLowerCase();
+      let stat = Object.values(productStats).find(p => p.name.trim().toLowerCase() === name);
+      if (!stat) {
+        stat = productStats[`sheet:${name}`] = {
+          id: `sheet:${name}`, name: r.product, category: r.category || 'General',
+          sellingPrice: 0, costPrice: 0, currentStock: 0, minStock: 0,
+          unitsSold: 0, revenue: 0, cost: 0, profit: 0, orderCount: 0
+        };
+      }
+      stat.unitsSold += r.quantity;
+      stat.revenue += revenue;
+      stat.cost += cost;
+      stat.profit += revenue - cost;
+
+      // Rows are in date order, so the last stock figure per product wins
+      sheetStats[name] ||= {};
+      if (r.stock != null) sheetStats[name].stockValue = r.stock * (r.cost ?? (r.price || 0) * 0.8);
+      if (stat.id.startsWith('sheet:')) {
+        stat.sellingPrice = r.price || stat.sellingPrice;
+        stat.costPrice = r.cost || stat.costPrice;
+        if (r.stock != null) stat.currentStock = r.stock;
+      }
+    });
+    totalRevenue += sheetRevenue;
+    const sheetStockValue = Object.values(sheetStats).reduce((sum, s) => sum + (s.stockValue || 0), 0);
+
     const productList = Object.values(productStats);
 
     // Fast moving vs Slow moving
@@ -525,7 +583,8 @@ router.get('/product-analytics', async (req, res) => {
       .sort((a, b) => b.unitsSold - a.unitsSold)
       .slice(0, 5);
 
-    const slowMoving = [...productList]
+    const slowMoving = productList
+      .filter(p => sheet.rows.length === 0 || p.unitsSold > 0)
       .sort((a, b) => a.unitsSold - b.unitsSold)
       .slice(0, 5);
 
@@ -537,7 +596,9 @@ router.get('/product-analytics', async (req, res) => {
 
     // Inventory Turnover Ratio = Cost of Goods Sold / Average Inventory Value
     const totalInventoryCost = products.reduce((sum, p) => sum + ((p.quantity || 0) * (p.costPrice || p.sellingPrice * 0.8)), 0);
-    const inventoryTurnover = totalInventoryCost > 0 ? (totalCost / totalInventoryCost).toFixed(2) : '0.00';
+    // Sheet sales are compared with the sheet's own stock, not the app's product list
+    const stockCost = sheetStockValue > 0 ? sheetStockValue : totalInventoryCost;
+    const inventoryTurnover = stockCost > 0 ? (totalCost / stockCost).toFixed(2) : '0.00';
 
     // Time-series trend array
     const salesTrend = Object.values(timelineMap).sort((a, b) => a.date.localeCompare(b.date));
@@ -584,14 +645,25 @@ router.get('/product-analytics', async (req, res) => {
       };
     });
 
+    // Uploaded customer history dated in this period. It has no items, so it only
+    // affects revenue, orders and order value; item-level figures use app bills.
+    const imported = customers.filter(c =>
+      (c.importedSpent || 0) > 0 && c.lastVisit >= startDate && c.lastVisit < endDate);
+    const importedRevenue = imported.reduce((sum, c) => sum + c.importedSpent, 0);
+    const orderRevenue = billRevenue + importedRevenue;
+    const overviewRevenue = sheetRevenue > 0 ? totalRevenue : orderRevenue;
+    const overviewOrders = sales.length + imported.length;
+
     res.json({
       summary: {
         totalProducts,
         totalCustomers: customers.length,
-        totalOrders: sales.length,
-        totalRevenue,
+        totalOrders: overviewOrders,
+        totalRevenue: overviewRevenue,
+        uploadedHistory: { orders: imported.length, revenue: importedRevenue },
+        uploadedSheet: { revenue: Math.round(sheetRevenue), market: sheet.market },
         totalUnitsSold,
-        averageOrderValue: sales.length > 0 ? Math.round(totalRevenue / sales.length) : 0,
+        averageOrderValue: overviewOrders > 0 ? Math.round(orderRevenue / overviewOrders) : 0,
         averageSellingPrice,
         estimatedProfit,
         profitMarginPct,

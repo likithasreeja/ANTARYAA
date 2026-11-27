@@ -36,7 +36,7 @@ function salesCsv(fromDate, days, extraHeaderLines = '') {
 
 async function register(phone) {
   const res = await axios.post(`${BASE_URL}/auth/register`, {
-    name: `Inventory Test ${phone}`, ownerName: 'Tester', city: 'Bengaluru', phone, password: 'pass12345'
+    name: `Inventory Test ${phone}`, ownerName: 'Tester', city: 'Bengaluru', phone, password: 'Pass@123'
   });
   return { headers: { Authorization: `Bearer ${res.data.token}` } };
 }

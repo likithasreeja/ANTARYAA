@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs');
 const { v4: uuidv4 } = require('uuid');
 const { db } = require('../db');
 const { generateToken } = require('../middleware');
+const { registrationError } = require('../services/registrationRules');
 
 const router = express.Router();
 
@@ -13,6 +14,11 @@ router.post('/register', async (req, res) => {
 
     if (!name || !ownerName || !phone || !password) {
       return res.status(400).json({ error: 'Shop name, owner name, phone and password are required' });
+    }
+
+    const ruleError = registrationError({ name, ownerName, password });
+    if (ruleError) {
+      return res.status(400).json({ error: ruleError });
     }
 
     // Check if phone already exists

@@ -7,6 +7,7 @@ import {
 import { motion } from 'framer-motion';
 import api from '../api';
 import { useStore } from '../context/StoreContext';
+import { trackEvent } from '../utils/analytics';
 
 const SUGGESTION_ICONS = {
   'restock': { icon: '📦', color: '#fbbf24', bg: 'rgba(251, 191, 36, 0.18)' },
@@ -43,6 +44,7 @@ export default function SmartSuggestion() {
     try {
       const data = await api.getSuggestions();
       setSuggestions(data.suggestions || []);
+      trackEvent('recommendation_viewed', { recommendation_type: 'smart_suggestions' });
     } catch (err) {
       console.error(err);
     }

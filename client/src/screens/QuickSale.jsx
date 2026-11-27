@@ -33,6 +33,11 @@ export default function QuickSale() {
   }, []);
 
   const addManualItem = (product) => {
+    if (saleItems.length === 0) {
+      const price = product.sellingPrice;
+      const amountRange = price <= 100 ? '0-100' : price <= 500 ? '101-500' : price <= 1000 ? '501-1000' : '1000+';
+      trackEvent('checkout_started', { item_count: 1, amount_range: amountRange });
+    }
     const existing = saleItems.find(i => i.productId === product.id);
     if (existing) {
       setSaleItems(saleItems.map(i => i.productId === product.id ? { ...i, quantity: i.quantity + 1, itemTotal: (i.quantity + 1) * i.price } : i));

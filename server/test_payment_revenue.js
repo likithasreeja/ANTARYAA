@@ -26,7 +26,7 @@ function check(condition, label) {
 async function registerShop(suffix) {
   const phone = `98${Date.now().toString().slice(-6)}${suffix}`;
   const { data } = await axios.post(`${BASE_URL}/auth/register`, {
-    name: `Revenue Test ${suffix}`, ownerName: 'Tester', city: 'Pune', phone, password: 'secret123'
+    name: `Revenue Test ${suffix}`, ownerName: 'Tester', city: 'Pune', phone, password: 'Pass@123'
   });
   return { headers: { Authorization: `Bearer ${data.token}` } };
 }

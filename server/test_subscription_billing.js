@@ -67,7 +67,7 @@ async function expectStatus(promise, status) {
   try { await promise; return false; } catch (e) { return e.response?.status === status ? (e.response.data || true) : false; }
 }
 async function register(phone) {
-  const res = await axios.post(`${BASE_URL}/auth/register`, { name: `Sub Test ${phone}`, ownerName: 'Owner', city: 'Pune', phone, password: 'pass12345' });
+  const res = await axios.post(`${BASE_URL}/auth/register`, { name: `Sub Test ${phone}`, ownerName: 'Owner', city: 'Pune', phone, password: 'Pass@123' });
   return { headers: { Authorization: `Bearer ${res.data.token}` } };
 }
 

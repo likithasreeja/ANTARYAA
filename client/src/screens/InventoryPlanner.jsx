@@ -3,9 +3,10 @@ import { FileSpreadsheet, Upload, Trash2, Calculator, Download, AlertTriangle, C
 import { useStore } from '../context/StoreContext';
 import api from '../api';
 import { trackEvent } from '../utils/analytics';
+import { extractSheetsFromZip, isZipFile, MAX_ZIP_BYTES } from '../utils/zipSheets';
 
 const MAX_FILE_BYTES = 15 * 1024 * 1024;
-const ACCEPTED = '.xlsx,.xls,.xlsm,.csv';
+const ACCEPTED = '.xlsx,.xls,.xlsm,.csv,.zip';
 
 const FIELDS = [
   { key: 'date', label: 'Date', required: true },
@@ -116,8 +117,36 @@ export default function InventoryPlanner() {
 
   const updatePending = (id, patch) => setPending(list => list.map(p => (p.id === id ? { ...p, ...patch } : p)));
 
+  // Replaces each .zip in the selection with the sheets inside it
+  const expandZips = async (fileList) => {
+    const files = [];
+    for (const file of fileList) {
+      if (!isZipFile(file)) {
+        files.push(file);
+        continue;
+      }
+      if (file.size > MAX_ZIP_BYTES) {
+        showToast(`${file.name} is larger than 50 MB`, 'error');
+        continue;
+      }
+      try {
+        const { files: sheets, skipped } = await extractSheetsFromZip(file, MAX_FILE_BYTES);
+        if (skipped.length) {
+          showToast(`${file.name}: skipped ${skipped.length} file(s). ${skipped[0].name}: ${skipped[0].reason}`, 'error');
+        } else if (!sheets.length) {
+          showToast(`${file.name} has no Excel or CSV files`, 'error');
+        }
+        files.push(...sheets);
+      } catch (err) {
+        showToast(`${file.name}: ${err.message}`, 'error');
+      }
+    }
+    return files;
+  };
+
   const addFiles = async (fileList) => {
-    for (const file of Array.from(fileList)) {
+    // Copy first: the FileList empties when the file input is reset
+    for (const file of await expandZips(Array.from(fileList))) {
       const id = `${file.name}-${file.size}-${Date.now()}-${Math.random()}`;
       if (file.size > MAX_FILE_BYTES) {
         showToast(`${file.name} is larger than 15 MB`, 'error');
@@ -220,7 +249,7 @@ export default function InventoryPlanner() {
         <Upload size={32} color="var(--accent)" />
         <h3 style={{ margin: '10px 0 4px' }}>Add sales sheets to "{market}"</h3>
         <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', margin: 0 }}>
-          Drop or select any number of .xlsx / .xls / .csv files. Each needs a date, product and quantity column.
+          Drop or select any number of .xlsx / .xls / .csv files, or .zip files containing them. Each sheet needs a date, product and quantity column.
           New files add to the market's history.
         </p>
         <input ref={fileInputRef} type="file" accept={ACCEPTED} multiple style={{ display: 'none' }}
